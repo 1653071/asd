@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "rootDir": "",
+        "sourceMap": true,
+        "target": "ES2022",
+        "types": [
+            "node"
+        ],
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "noEmit": true,
+        "declaration": true
+    }
+}
