@@ -46,7 +46,11 @@ export class ChatServer {
                 console.log('[server](message): %s', JSON.stringify(m));
                 this.io.emit('message', m);
             });
-
+            const sendStatus = function(s){
+                socket.emit('status', s);
+            }
+    
+            
             socket.on('disconnect', () => {
                 console.log('Client disconnected');
             });
