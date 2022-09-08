@@ -3,7 +3,7 @@ import swaggerJsdoc from "swagger-jsdoc"
 import express from 'express';
 import * as ioServer from "socket.io"
 import cors from 'cors'
-
+import productRouter from "./routes/productRouter";
 const httpApp = express();
 const options = {
 	definition: {
@@ -19,6 +19,7 @@ const options = {
 }
 
 httpApp.use(cors({origin: true}));
+httpApp.use("/", productRouter);
 httpApp.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

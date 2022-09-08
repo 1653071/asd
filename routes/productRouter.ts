@@ -1,5 +1,5 @@
 import express from 'express';
-
+import * as chatmessage from "../controller/chat-message"
 const productRouter = express.Router();
 /**
  * @openapi
@@ -15,6 +15,10 @@ const productRouter = express.Router();
 productRouter.get('/seed', () => {
 	console.log("asd")
 })
+
+productRouter.post('/seed1', chatmessage.uploadFiles)
+
+
 
 
 export default productRouter;
