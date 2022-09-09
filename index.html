@@ -105,12 +105,18 @@
                         for(var x = 0;x < data.length;x++){
                             // Build out message div
                             var message = document.createElement('div');
+                            const btn = document.createElement("button");
+                            btn.innerHTML = "Hello Button";
                             message.setAttribute('class', 'chat-message');
                             message.textContent = data[x].name+": "+data[x].message;
                             messages.appendChild(message);
+                            messages.appendChild(btn);
                             messages.insertBefore(message, messages.firstChild);
                         }
                     }
+                    socket.on("deleted", function(data){
+                        console.log(data)
+                    })
                 });
 
                 // Get Status From Server
@@ -132,7 +138,9 @@
                             name:username.value,
                             message:textarea.value
                         });
-
+                        socket.emit('deleteMessage', {
+                            messageId: "631a22fa0200e3b00714d8c6"
+                        });
                         event.preventDefault();
                     }
                 })

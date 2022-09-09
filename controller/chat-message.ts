@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+import ChatMessage from "../schema/ChatMessage";
 import upload from "../ultis/upload"
 const dbConfig = require("../config/db");
 const MongoClient = require("mongodb").MongoClient;
@@ -49,4 +51,23 @@ const getListFiles = async (req, res) => {
     });
   }
 };
-export {uploadFiles}
+
+const deleteMessage = async (data: any) => {
+  try {
+    const result1 = await ChatMessage.deleteOne({ _id: new ObjectId(data.messageId) })
+    return result1
+  } catch (err) {
+    return err
+  }
+  
+};
+const changeMessage = async (data: any) => {
+  try {
+    const result1 = await ChatMessage.deleteOne({ _id: new ObjectId(data.messageId) })
+    return result1
+  } catch (err) {
+    return err
+  }
+  
+};
+export { uploadFiles, deleteMessage }

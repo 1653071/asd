@@ -4,6 +4,9 @@ import express from 'express';
 import * as ioServer from "socket.io"
 import cors from 'cors'
 import productRouter from "./routes/productRouter";
+import * as ChatController from "./controller/chat-message"
+import connect from "./connect";
+connect()
 const httpApp = express();
 const options = {
 	definition: {
@@ -95,7 +98,52 @@ chatBattle.on('connection', (socket: any) => {
     socket.on('sendMessageToGroup', async (data: any) => {
         let name = data.name;
         let message = data.message;
-       
+        ChatController.deleteMessage(data1).then(r=>{
+
+    })
+    socket.on('deleteMessage', async (data: any) => {
+
+        let data1 = {
+            messageId: data.messageId
+
+        }
+        console.log(data1)
+        let isDelete = await ChatController.deleteMessage(data1).then(r=>{
+            console.log(r)
+            const returnData = {
+                error: 0,
+                error_description:"Success",
+                data : {   
+                    deleteCount: r.deleteCount,
+                    idMessageDelete: data1.messageId
+                } 
+            }
+            socket.emit("deleted", returnData);
+        }).catch(e => {
+            const returnData = {
+                error: 0,
+                error_description:"That Bai",
+                data : {   
+                    
+                } 
+            }
+            socket.emit("deleted", returnData);
+        });
+        
+        
+
+    })
+
+    socket.on('updateMessage', async (data: any) => {
+        let name = data.name;
+        let message = data.message;
+
+        let data1 = {
+            messageId: data.messageId
+
+        }
+        // let isDelete = await ChatController.deleteMessage(data1);
+        
 
     })
     /** End send message to user */
