@@ -6,7 +6,8 @@ import cors from 'cors'
 import productRouter from "./routes/productRouter";
 import * as ChatController from "./controller/chat-message"
 import connect from "./connect";
-connect()
+
+const Database = connect()
 const httpApp = express();
 const options = {
 	definition: {
@@ -50,6 +51,8 @@ wsChat.use((_socket: any, next: () => void) => {
 chatBattle.on('connection', (socket: any) => {
     console.log(socket)
     const socketId = socket.id;
+    
+    ChatController.deleteMessag1e("1")
     // const clientIp = socket.request.connection.remoteAddress;
     // const clientPort = socket.request.connection.remotePort;
     // const clientFull = ${clientIp}:${clientPort}-${socketId};
@@ -65,7 +68,7 @@ chatBattle.on('connection', (socket: any) => {
         // const statusData = await UserController.updateStatusByUsername(socket.room)
         // socket.emit('status', statusData)
     });
-    socket.on('input', function(data){
+    socket.on('input', function(data) {
         let name = data.name;
         let message = data.message;
         let sendStatus = function(s){
@@ -98,7 +101,7 @@ chatBattle.on('connection', (socket: any) => {
     socket.on('sendMessageToGroup', async (data: any) => {
         let name = data.name;
         let message = data.message;
-        ChatController.deleteMessage(data1).then(r=>{
+        ChatController.deleteMessage(data).then(r=>{})
 
     })
     socket.on('deleteMessage', async (data: any) => {
@@ -151,10 +154,10 @@ chatBattle.on('connection', (socket: any) => {
     /**
      * Delete message chat 
      */
-    
+
 });
 
 
 httpServer.listen(4000, () => {
-    console.log(`Server is running on http://localhost:${4999}`);
+    console.log(`Server is running on http://localhost:${4999}`)
 })
