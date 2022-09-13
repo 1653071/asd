@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import mongo from "mongodb"
 import ChatMessage, {ChatMessageSchema} from "../schema/ChatMessage";
 import upload from "../ultis/upload"
 const dbConfig = require("../config/db");
@@ -7,24 +8,26 @@ const GridFSBucket = require("mongodb").GridFSBucket;
 const url = dbConfig.url;
 const baseUrl = "http://localhost:8080/files/";
 const mongoClient = new MongoClient(url);
+const fs = require('fs')
+const Grid = require('gridfs-stream')
+var gfs = Grid(db, mongo);
 import { db } from "../connect";
-const uploadFiles = async (req, res) => {
+const uploadFiles = async (data) => {
   try {
-    await upload(req, res);
-    console.log(req.file);
-    if (req.file == undefined) {
-      return res.send({
-        message: "You must select a file.",
-      });
-    }
-    return res.send({
-      message: "File has been uploaded.",
-    });
+    let writeStream = gfs.createWriteStream({
+      mode: 'w',
+      filename: 'Image',
+      content_type: 'image/png'
+  });
+  const a = fs.createReadStream(data).pipe(writeStream);
+  console.log(a)
+    //await upload(req, res);
+    
+   
+    
   } catch (error) {
     console.log(error);
-    return res.send({
-      message: "Error when trying upload image: ${error}",
-    });
+    console.log("undefince")
   }
 };
 const getListFiles = async (req, res) => {
@@ -81,7 +84,7 @@ const deleteMessag1e = async (data: any) => {
     var d = new Date('2014-01-01 10:11:55');
     d = new Date(d.getTime() + 10000);
 
-    const result12 = await ChatMessage.findByIdAndUpdate("631e8150d18d1fe8ea974d3a",{deletedDate: d} )
+    const result12 = await ChatMessage.updateOne({_id: new ObjectId("631e8150d18d1fe8ea974d3a")},{$set:{deletedDate: d}} )
     
     //const result1 = ChatMessageSchema.index({expireAt: 1},{expireAfterSeconds: 2, partialFilterExpression: { _id: new ObjectId("631e31b3d18d1fe8ea974d30") }});
     return result12

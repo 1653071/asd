@@ -149,6 +149,28 @@ chatBattle.on('connection', (socket: any) => {
         
 
     })
+    socket.on('sendPhoto', async function (data: any ) {
+        const file = data
+        console.log(data)
+         ChatController.uploadFiles(data)
+        // let ext = "";
+        // switch (guess) {
+        //     case "png": ext = ".png"; break;
+        //     case "jpeg": ext = ".jpg"; break;
+        //     default: ext = guess; break;
+        // }
+        // let savedFilename = "/upload/" + ext;
+        // fs.writeFile(__dirname + "/public" + savedFilename, getBase64Image(data.base64), 'base64', function (err) {
+        //     if (err !== null)
+        //         console.log(err);
+        //     else
+        //         io.to(roomChannel).emit("isSendImage", {
+        //             path: savedFilename,
+        //         });
+        //     console.log("Send photo success!");
+        // });
+
+    });
     /** End send message to user */
 
     /**
