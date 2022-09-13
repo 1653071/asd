@@ -5,6 +5,7 @@ import * as ioServer from "socket.io"
 import cors from 'cors'
 import productRouter from "./routes/productRouter";
 import * as ChatController from "./controller/chat-message"
+import bodyParser from "body-parser"
 import connect from "./connect";
 
 const Database = connect()
@@ -21,7 +22,7 @@ const options = {
 	// looks for configuration in specified directories
 	apis: ['./routes/*.ts'],
 }
-
+httpApp.use(bodyParser.urlencoded({ extended: true }));
 httpApp.use(cors({origin: true}));
 httpApp.use("/", productRouter);
 httpApp.use(function(req, res, next) {
@@ -152,7 +153,7 @@ chatBattle.on('connection', (socket: any) => {
     socket.on('sendPhoto', async function (data: any ) {
         const file = data
         console.log(data)
-         ChatController.uploadFiles(data)
+        
         // let ext = "";
         // switch (guess) {
         //     case "png": ext = ".png"; break;

@@ -10,24 +10,29 @@ const baseUrl = "http://localhost:8080/files/";
 const mongoClient = new MongoClient(url);
 const fs = require('fs')
 const Grid = require('gridfs-stream')
-var gfs = Grid(db, mongo);
+
 import { db } from "../connect";
-const uploadFiles = async (data) => {
+const uploadFiles = async (req: any, res: any) => {
   try {
-    let writeStream = gfs.createWriteStream({
-      mode: 'w',
-      filename: 'Image',
-      content_type: 'image/png'
-  });
-  const a = fs.createReadStream(data).pipe(writeStream);
-  console.log(a)
-    //await upload(req, res);
-    
-   
-    
+    console.log(req.file)
+    console.log(req.body.playgroundId)
+    console.log(req.body.team)
+    const a = await upload(req, res);
+    console.log("ccc", a)
+    if (req.file == undefined) {
+      return res.send({
+        filename: "You must select a file.",
+      });
+    }
+
+    return res.send({
+      filename: req.file.filename,
+    });
   } catch (error) {
     console.log(error);
-    console.log("undefince")
+    return res.send({
+      message: "Error when trying upload image: ${error}",
+    });
   }
 };
 const getListFiles = async (req, res) => {
