@@ -8,7 +8,7 @@ import * as ChatController from "./controller/chat-message"
 import bodyParser from "body-parser"
 import connect from "./connect";
 
-const Database = connect()
+const Database = connect.connect()
 const httpApp = express();
 const options = {
 	definition: {

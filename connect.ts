@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-
+let Client = null
 async function connect() {
     try {
-        const Client= await mongoose.connect(
+        Client= await mongoose.connect(
             process.env.MONGODB_URL || 'mongodb+srv://quang:1234567890@cluster0.ssrlu.mongodb.net/food',
             {}
         );
@@ -15,4 +15,4 @@ async function connect() {
 
 
 export const db = mongoose.connection
-export default connect;
+export default {connect,Client};

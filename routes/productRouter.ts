@@ -23,7 +23,10 @@ productRouter.post('/seed1',uploadFiles1.single('file') , chatmessage.uploadFile
 
 productRouter.post('/upload',uploadFiles1.single('file'), ChatController.uploadFiles)
 
+productRouter.get('/getFile', ChatController.getFile)
 
+productRouter.get('/files/:file', ChatController.getFile2)
 
+productRouter.get('/getMessage', ChatController.getAllMessage)
 
 export default productRouter;

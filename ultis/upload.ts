@@ -1,6 +1,14 @@
 const util = require("util");
+import mongoose from "mongoose";
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
+const Grid = require('gridfs-stream');
+import a,{db} from "../connect"
+
+let gfs;
+
+gfs = Grid(db, mongoose.mongo);
+gfs.collection('photos');
 
 var storage = new GridFsStorage({
   url: 'mongodb+srv://quang:1234567890@cluster0.ssrlu.mongodb.net/food',
@@ -20,5 +28,6 @@ var storage = new GridFsStorage({
 });
 export var uploadFiles1= multer({ storage: storage })
 export var uploadFiles = multer({ storage: storage }).single("file");
+
 var uploadFilesMiddleware = util.promisify(uploadFiles);
-export default uploadFilesMiddleware;
+export default {uploadFilesMiddleware,gfs};

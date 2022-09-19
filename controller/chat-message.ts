@@ -1,23 +1,24 @@
 import { ObjectId } from "mongodb";
 import mongo from "mongodb"
-import ChatMessage, {ChatMessageSchema} from "../schema/ChatMessage";
+import ChatMessage, { ChatMessageSchema } from "../schema/ChatMessage";
 import upload from "../ultis/upload"
+import a, { db } from "../connect"
 const dbConfig = require("../config/db");
 const MongoClient = require("mongodb").MongoClient;
 const GridFSBucket = require("mongodb").GridFSBucket;
 const url = dbConfig.url;
-const baseUrl = "http://localhost:8080/files/";
+const baseUrl = "http://localhost:4000/files/";
 const mongoClient = new MongoClient(url);
 const fs = require('fs')
 const Grid = require('gridfs-stream')
 
-import { db } from "../connect";
+import mongoose, { Cursor } from "mongoose";
 const uploadFiles = async (req: any, res: any) => {
   try {
     console.log(req.file)
     console.log(req.body.playgroundId)
     console.log(req.body.team)
-    const a = await upload(req, res);
+    const a = await upload.uploadFilesMiddleware(req, res);
     console.log("ccc", a)
     if (req.file == undefined) {
       return res.send({
@@ -35,6 +36,112 @@ const uploadFiles = async (req: any, res: any) => {
     });
   }
 };
+export interface UserDoc {
+  _id: ObjectId
+  deletedDate?: Date;
+  content?: string;
+  playgroundId?: number;
+  team?: number;
+  type?: number;
+  linkImage?: string
+}
+const getAllMessage = async (req, res) => {
+  await ChatMessage.find().then((result: any): any => {
+    let a = []
+    let b = []
+    a = result
+
+    let authors = result.map(async function (author) {
+      let c: UserDoc = {
+        _id: author._id,
+        deletedDate: author.deletedDate,
+        content: author.content,
+        playgroundId: author.playgroundId,
+        team: author.team,
+        type: author.type
+      }
+      if (author.type === 1) {
+        const y = await get1File(author.content)
+        console.log(y)
+        c.linkImage = y.url
+        console.log(c)
+      }
+
+      b.push(author)
+      return author;
+    });
+
+
+
+
+    return res.status(200).send(b)
+  }).catch(e => {
+    return res.status(200).send(e.message)
+  })
+}
+
+const get1File = async function (name: string): Promise<any> {
+
+  const images = db.collection(dbConfig.imgBucket + ".files");
+  return images.findOne({ filename: name }).then(cursor=>{
+    console.log(cursor)
+    return {
+      name: cursor.filename,
+      url: baseUrl + cursor.filename,
+    }
+  }).catch(e => {
+    return null
+  });
+}
+const getFile = async (req, res) => {
+
+  const images = db.collection(dbConfig.imgBucket + ".files");
+  const cursor = images.find({});
+
+  if ((await cursor.count()) === 0) {
+    return res.status(500).send({
+      message: "No files found!",
+    });
+  }
+
+  let fileInfos = [];
+  await cursor.forEach((doc) => {
+    fileInfos.push({
+      name: doc.filename,
+      url: baseUrl + doc.filename,
+    });
+  });
+
+  return res.status(200).send(fileInfos);
+}
+
+const getFile2 = async (filename: string, res: any) => {
+
+  upload.gfs.collection('photos').findOne({ filename: "1663102435324-bezkoder-1646141362985.jpg" }, (err, file) => {
+    // Check if file
+    if (!file || file.length === 0) {
+      return res.status(200).send("asd");
+    }
+
+    // Check if image
+    if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+      // Read output to browser
+
+      const { db } = mongoose.connection;
+
+      const gridfsBucket = new mongoose.mongo.GridFSBucket(db, {
+        bucketName: 'photos'
+      })
+
+      const readstream = gridfsBucket.openDownloadStreamByName(file.filename);
+      readstream.pipe(res)
+    } else {
+      return res.status(200).send("asd")
+    }
+  });
+
+
+}
 const getListFiles = async (req, res) => {
   try {
     await mongoClient.connect();
@@ -68,7 +175,7 @@ const deleteMessage = async (data: any) => {
   } catch (err) {
     return err
   }
-  
+
 };
 const deleteMessag1e = async (data: any) => {
   try {
@@ -79,7 +186,7 @@ const deleteMessag1e = async (data: any) => {
       expireAfterSeconds: 30, // expire after 24 hours
     })
 
-    
+
     await Collection.createIndex({
       deletedDate: -1,
     }, {
@@ -89,14 +196,14 @@ const deleteMessag1e = async (data: any) => {
     var d = new Date('2014-01-01 10:11:55');
     d = new Date(d.getTime() + 10000);
 
-    const result12 = await ChatMessage.updateOne({_id: new ObjectId("631e8150d18d1fe8ea974d3a")},{$set:{deletedDate: d}} )
-    
+    const result12 = await ChatMessage.updateOne({ _id: new ObjectId("631e8150d18d1fe8ea974d3a") }, { $set: { deletedDate: d } })
+
     //const result1 = ChatMessageSchema.index({expireAt: 1},{expireAfterSeconds: 2, partialFilterExpression: { _id: new ObjectId("631e31b3d18d1fe8ea974d30") }});
     return result12
   } catch (err) {
     return err
   }
-  
+
 };
 const changeMessage = async (data: any) => {
   try {
@@ -105,6 +212,6 @@ const changeMessage = async (data: any) => {
   } catch (err) {
     return err
   }
-  
+
 };
-export { uploadFiles, deleteMessage, deleteMessag1e }
+export { uploadFiles, deleteMessage, deleteMessag1e, getFile, getAllMessage, getFile2 }
