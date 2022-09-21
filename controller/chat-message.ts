@@ -18,6 +18,7 @@ const uploadFiles = async (req: any, res: any) => {
     console.log(req.file)
     console.log(req.body.playgroundId)
     console.log(req.body.team)
+    const id = new ObjectId();
     const a = await upload.uploadFilesMiddleware(req, res);
     console.log("ccc", a)
     if (req.file == undefined) {
@@ -83,7 +84,7 @@ const getAllMessage = async (req, res) => {
 const get1File = async function (name: string): Promise<any> {
 
   const images = db.collection(dbConfig.imgBucket + ".files");
-  return images.findOne({ filename: name }).then(cursor=>{
+  return images.findOne({ filename: name }).then(cursor => {
     console.log(cursor)
     return {
       name: cursor.filename,
@@ -93,6 +94,40 @@ const get1File = async function (name: string): Promise<any> {
     return null
   });
 }
+
+const download = async (req, res) => {
+  try {
+    let num = 0;
+    const bucket = new GridFSBucket(db, {
+      bucketName: dbConfig.imgBucket,
+    });
+    
+    var downloadFolder = process.env.USERPROFILE + "/Downloads/"
+    let fullPath = downloadFolder + `` + req.params.messageId
+
+    fullPath = `${downloadFolder}${req.params.messageId} (${num++})`;
+    console.log(fullPath)
+    console.log(fullPath)
+    // while (fs.existsSync(downloadFolder + `/` + req.params.messageId)) {
+    //   fullPath = `${downloadFolder}${req.params.messageId} (${num++})`;
+    //   console.log(fullPath)
+    // }
+    console.log(downloadFolder + `/` + req.params.messageId)
+    console.log(fs.existsSync(downloadFolder + `/` + req.params.messageId))
+    let downloadStream = bucket.openDownloadStreamByName(req.params.messageId).pipe(fs.createWriteStream(fullPath))
+      .on('error', (e) => {
+        console.log("Some error occurred in download:");
+        res.send(e);
+      })
+      .on('finish', () => {
+        console.log("done downloading");
+        res.send('Done Downloading');
+      });
+  }
+  catch (e) {
+
+  }
+};
 const getFile = async (req, res) => {
 
   const images = db.collection(dbConfig.imgBucket + ".files");
@@ -139,8 +174,6 @@ const getFile2 = async (filename: string, res: any) => {
       return res.status(200).send("asd")
     }
   });
-
-
 }
 const getListFiles = async (req, res) => {
   try {
@@ -214,4 +247,4 @@ const changeMessage = async (data: any) => {
   }
 
 };
-export { uploadFiles, deleteMessage, deleteMessag1e, getFile, getAllMessage, getFile2 }
+export { uploadFiles, deleteMessage, deleteMessag1e, getFile, getAllMessage, getFile2, download }

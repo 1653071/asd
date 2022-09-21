@@ -29,4 +29,6 @@ productRouter.get('/files/:file', ChatController.getFile2)
 
 productRouter.get('/getMessage', ChatController.getAllMessage)
 
+productRouter.get('/files/download/:messageId', ChatController.download)
+
 export default productRouter;

@@ -18,11 +18,16 @@ var storage = new GridFsStorage({
     const match = ["image/png", "image/jpeg"];
     if (match.indexOf(file.mimetype) === -1) {
       const filename = `${Date.now()}-bezkoder-${file.originalname}`;
-      return filename;
+      return {
+        bucketName: "photos",
+        filename: `${Date.now()}-${file.originalname}`,
+        fileId: `image-${file._id}`
+      }
     }
     return {
       bucketName: "photos",
-      filename: `${Date.now()}-bezkoder-${file.originalname}`
+      filename: `${Date.now()}-${file.originalname}`,
+      fileId: `image-${file._id}`
     };
   }
 });
