@@ -101,7 +101,7 @@ const download = async (req, res) => {
     const bucket = new GridFSBucket(db, {
       bucketName: dbConfig.imgBucket,
     });
-    
+
     var downloadFolder = process.env.USERPROFILE + "/Downloads/"
     let fullPath = downloadFolder + `` + req.params.messageId
 
@@ -114,15 +114,25 @@ const download = async (req, res) => {
     // }
     console.log(downloadFolder + `/` + req.params.messageId)
     console.log(fs.existsSync(downloadFolder + `/` + req.params.messageId))
-    let downloadStream = bucket.openDownloadStreamByName(req.params.messageId).pipe(fs.createWriteStream(fullPath))
-      .on('error', (e) => {
-        console.log("Some error occurred in download:");
-        res.send(e);
+    let downloadStream = bucket.openDownloadStreamByName(req.params.messageId)
+    downloadStream.on('data', async (data) => {
+      const buf = Buffer.from(data); // Creating a new Buffer
+      const newFileName = 'nodejs.docx';
+      // now buffer contains the contents of the file we just read
+      fs.writeFile(`./${newFileName}`, buf, 'utf-8',() => {
+        
       })
-      .on('finish', () => {
-        console.log("done downloading");
-        res.send('Done Downloading');
-      });
+      console.log(buf);
+      res.send(buf);
+    })
+    downloadStream.on('error', (e) => {
+      console.log("Some error occurred in download:");
+      res.send(e);
+    })
+    downloadStream.on('finish', () => {
+      console.log("done downloading");
+      res.send('Done Downloading');
+    });
   }
   catch (e) {
 
