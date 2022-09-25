@@ -1,0 +1,88 @@
+{
+	"info": {
+		"title": "Node Swagger API",
+		"version": "1.0.0",
+		"description": "Demonstrating how to describe a RESTful API with Swagger"
+	},
+	"host": "localhost:3000",
+	"basePath": "/",
+	"swagger": "2.0",
+	"paths": {
+		"/files/download/:messageId": {
+			"get": {
+				"tags": [
+					"Chat-battle"
+				],
+				"parameters": [
+					{
+						"name": "messageId",
+						"in": " parameters",
+						"description": "message id that is image",
+						"schema": {
+							"type": "number",
+							"example": "adcasd"
+						}
+					}
+				]
+			}
+		},
+		"image/:messageId": {
+			"get": {
+				"tags": [
+					"Chat-battle"
+				],
+				"parameters": [
+					{
+						"name": "messageId",
+						"in": " parameters",
+						"description": "message id that is image",
+						"schema": {
+							"type": "number",
+							"example": "adcasd"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "get image to UI",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					},
+					"400": {
+						"description": "message id wrong",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					},
+					"401": {
+						"description": "Authenticate fail",
+						"schema": {
+							"$ref": "#/definitions/Response"
+						}
+					}
+				}
+			}
+		}
+	},
+
+	
+	"definitions": {
+	"Response": {
+		"properties": {
+			"error": {
+				"type": "number"
+			},
+			"error_description": {
+				"type": "string"
+			},
+			"data": {
+				"type": "object"
+			}
+		}
+	}
+},
+"responses": {},
+"parameters": {},
+"securityDefinitions": {}
+}
