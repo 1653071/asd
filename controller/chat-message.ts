@@ -81,6 +81,44 @@ const getAllMessage = async (req, res) => {
   })
 }
 
+// const getAllMessage = async (req, res) => {
+//   await Playground.find({Status:{ $ne: 5 }}).then((result: any): any => {
+//     for (let playground of result) {
+//       let playgroundId =  playground._id
+//       let team
+//     }
+//     let a = []
+//     let b = []
+//     a = result
+
+//     let authors = result.map(async function (author) {
+//       let c: UserDoc = {
+//         _id: author._id,
+//         deletedDate: author.deletedDate,
+//         content: author.content,
+//         playgroundId: author.playgroundId,
+//         team: author.team,
+//         type: author.type
+//       }
+//       if (author.type === 1) {
+//         const y = await get1File(author.content)
+//         console.log(y)
+//         c.linkImage = y.url
+//         console.log(c)
+//       }
+
+//       b.push(author)
+//       return author;
+//     });
+
+
+
+
+//     return res.status(200).send(b)
+//   }).catch(e => {
+//     return res.status(200).send(e.message)
+//   })
+// }
 const get1File = async function (name: string): Promise<any> {
 
   const images = db.collection(dbConfig.imgBucket + ".files");
