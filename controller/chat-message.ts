@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import mongo from "mongodb"
-import ChatMessage, { ChatMessageSchema } from "../schema/ChatMessage";
+import ChatMessage, { ChatMessageSchema, IChatMessageModel } from "../schema/ChatMessage";
 import upload from "../ultis/upload"
 import a, { db } from "../connect"
 const dbConfig = require("../config/db");
@@ -47,40 +47,62 @@ export interface UserDoc {
   linkImage?: string
 }
 const getAllMessage = async (req, res) => {
-  await ChatMessage.find().then((result: any): any => {
-    let a = []
-    let b = []
-    a = result
+  let a: IChatMessageModel[] = []
+  a = await ChatMessage.find()
 
-    let authors = result.map(async function (author) {
-      let c: UserDoc = {
-        _id: author._id,
-        deletedDate: author.deletedDate,
-        content: author.content,
-        playgroundId: author.playgroundId,
-        team: author.team,
-        type: author.type
-      }
-      if (author.type === 1) {
-        const y = await get1File(author.content)
-        console.log(y)
-        c.linkImage = y.url
-        console.log(c)
-      }
+  return res.send(a)
+}
+const getAllMessage1 = async (req, res) => {
+  let a: any = null
+  try{
 
-      b.push(author)
-      return author;
-    });
+    a = await ChatMessage.findByIdAndUpdate()
+  }
+  catch(e) {
 
+  }
 
+  return res.send(a)
+}
+Since all answers are missing some bits (catch blocks, checking that client is not null) I came with my own solution. Tested with Mongo server v4.0.7 and Node JS driver 3.2.2.
 
+Note that the example is a console program, where we close the connection to the server in the finally block. In a web application, the connections are reused. See Node Mongo docs. Also, the errors are logged with libraries such as Winston or Morgan and not console logged.
 
-    return res.status(200).send(b)
-  }).catch(e => {
-    return res.status(200).send(e.message)
-  })
+const MongoClient = require('mongodb').MongoClient;
+
+const url = 'mongodb://localhost:27017';
+
+async function findOne() {
+
+    const client = await MongoClient.connect(url, { useNewUrlParser: true })
+        .catch(err => { console.log(err); });
+
+    if (!client) {
+        return;
+    }
+
+    try {
+
+        const db = client.db("testdb");
+
+        let collection = db.collection('cars');
+
+        let query = { name: 'Volkswagen' }
+
+        let res = await collection.findOne(query);
+
+        console.log(res);
+
+    } catch (err) {
+
+        console.log(err);
+    } finally {
+
+        client.close();
+    }
 }
 
+await findOne();
 // const getAllMessage = async (req, res) => {
 //   await Playground.find({Status:{ $ne: 5 }}).then((result: any): any => {
 //     for (let playground of result) {
