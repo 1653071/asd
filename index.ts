@@ -23,6 +23,7 @@ const options = {
 	apis: ['./routes/*.ts'],
 }
 httpApp.use(bodyParser.urlencoded({ extended: true }));
+httpApp.use('/static', express.static('uploads'))
 httpApp.use(cors({origin: true}));
 httpApp.use("/", productRouter);
 httpApp.use(function(req, res, next) {

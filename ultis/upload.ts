@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require('gridfs-stream');
+let fs = require('fs-extra');
 import a,{db} from "../connect"
 
 let gfs;
@@ -35,4 +36,18 @@ export var uploadFiles1= multer({ storage: storage })
 export var uploadFiles = multer({ storage: storage }).single("file");
 
 var uploadFilesMiddleware = util.promisify(uploadFiles);
-export default {uploadFilesMiddleware,gfs};
+
+var storage1 = multer.diskStorage({
+  destination: function (req, file, cb) {
+    let path = `uploads`;
+    fs.mkdirsSync(path);
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+ 
+export var upload1 = multer({ storage: storage1 })
+
+export default {uploadFilesMiddleware,gfs, upload1};
