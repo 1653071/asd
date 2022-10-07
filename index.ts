@@ -7,7 +7,7 @@ import productRouter from "./routes/productRouter";
 import * as ChatController from "./controller/chat-message"
 import bodyParser from "body-parser"
 import connect from "./connect";
-import { chatBattleEvent } from "./event";
+
 const Database = connect.connect()
 const httpApp = express();
 const options = {

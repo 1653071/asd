@@ -39,15 +39,24 @@ var uploadFilesMiddleware = util.promisify(uploadFiles);
 
 var storage1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    let path = `uploads`;
+    let path = `uploads/${"asd"}`;
     fs.mkdirsSync(path);
-    cb(null, 'uploads')
+    cb(null, `uploads/${"asd"}`)
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
+    cb(null, file.originalname + '-' + Date.now())
   }
 })
  
-export var upload1 = multer({ storage: storage1 })
+export var upload1 = multer({ storage: storage1,fileFilter: (req, file, cb) => {
+  
+  const enc = new TextEncoder();
+          const decodedData = enc.encode(file.originalname)
+          console.log(decodedData)
+          var dnc = new TextDecoder("utf-8");
+var arr = new Uint8Array(decodedData);
+console.log(dnc.decode(arr));
+  cb(null, true)
+}, })
 
 export default {uploadFilesMiddleware,gfs, upload1};
