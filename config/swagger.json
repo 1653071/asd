@@ -38,7 +38,23 @@
 						"description": "message id that is image",
 						"schema": {
 							"type": "number",
-							"example": "adcasd"
+							"example": "adcasd",
+							"notes":"asdasd"
+						}
+					},
+					{
+						"name": "body",
+						"in": "body",
+						"schema": {
+							"properties": {
+								"messageId": {
+									
+									"example": "asdas",
+									"type": "string",
+									"description": "ID of pet that needs to be fetched",
+									"required": true
+								}
+							}
 						}
 					}
 				],
@@ -65,24 +81,22 @@
 			}
 		}
 	},
-
-	
 	"definitions": {
-	"Response": {
-		"properties": {
-			"error": {
-				"type": "number"
-			},
-			"error_description": {
-				"type": "string"
-			},
-			"data": {
-				"type": "object"
+		"Response": {
+			"properties": {
+				"error": {
+					"type": "number"
+				},
+				"error_description": {
+					"type": "string"
+				},
+				"data": {
+					"type": "object"
+				}
 			}
 		}
-	}
-},
-"responses": {},
-"parameters": {},
-"securityDefinitions": {}
+	},
+	"responses": {},
+	"parameters": {},
+	"securityDefinitions": {}
 }

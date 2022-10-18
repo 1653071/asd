@@ -7,7 +7,8 @@ import productRouter from "./routes/productRouter";
 import * as ChatController from "./controller/chat-message"
 import bodyParser from "body-parser"
 import connect from "./connect";
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./config/swagger.json');
 const Database = connect.connect()
 const httpApp = express();
 const options = {
@@ -22,6 +23,8 @@ const options = {
 	// looks for configuration in specified directories
 	apis: ['./routes/*.ts'],
 }
+
+httpApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 httpApp.use(bodyParser.urlencoded({ extended: true }));
 httpApp.use('/static', express.static('uploads'))
 httpApp.use(cors({origin: true}));
