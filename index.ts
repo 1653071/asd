@@ -25,7 +25,8 @@ const options = {
 }
 
 httpApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-httpApp.use(bodyParser.urlencoded({ extended: true }));
+httpApp.use(bodyParser.urlencoded({ extended: false }));
+httpApp.use(express.json());
 httpApp.use('/static', express.static('uploads'))
 httpApp.use(cors({origin: true}));
 httpApp.use("/", productRouter);
